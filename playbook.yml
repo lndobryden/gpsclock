@@ -1,0 +1,28 @@
+---
+- hosts: clockservers
+  remote_user: root
+  gather_facts: no
+  
+  pre_tasks:
+  - name: install python2
+    raw: apt-get update && apt-get -y install python-simplejson
+
+  tasks:
+  - apt: name=git state=latest
+  - apt: name=build-essential state=latest
+  - apt: name=python-dev state=latest
+  - apt: name=python-smbus state=latest
+  - apt: name=python-imaging state=latest
+
+  - name: clone lcd library
+    git: repo=https://github.com/adafruit/Adafruit_Python_LED_Backpack.git dest=/root/lcdlibrary accept_hostkey=yes
+
+  - name: install lcd library
+    shell: python setup.py install chdir=/root/lcdlibrary
+
+  - apt: name=gpsd state=latest
+  - apt: name=gpsd-clients state=latest
+
+  - copy: src=gpsd_defaults dest=/etc/default/gpsd owner=root group=root mode=644
+
+  - service: name=gpsd state=restarted
