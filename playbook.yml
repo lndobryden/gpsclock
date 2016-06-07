@@ -26,3 +26,9 @@
   - copy: src=gpsd_defaults dest=/etc/default/gpsd owner=root group=root mode=644
 
   - service: name=gpsd state=restarted
+
+  - apt: name=ntp state=latest
+
+  - copy: src=ntp.conf dest=/etc/ntp.conf owner=root group=root mode=644
+
+  - service: name=ntp state=restarted

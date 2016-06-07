@@ -9,5 +9,5 @@ USBAUTO="true"
 DEVICES=""
 
 # Other options you want to pass to gpsd
-GPSD_OPTIONS="/dev/ttyUSB0"
+GPSD_OPTIONS="/dev/ttyUSB0 -n"
 GPSD_SOCKET="/var/run/gpsd.sock"
