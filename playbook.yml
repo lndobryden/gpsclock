@@ -8,11 +8,11 @@
     raw: apt-get update && apt-get -y install python-simplejson
 
   tasks:
-  - apt: name=git state=latest
-  - apt: name=build-essential state=latest
-  - apt: name=python-dev state=latest
-  - apt: name=python-smbus state=latest
-  - apt: name=python-imaging state=latest
+  - apt: name=git state=installed
+  - apt: name=build-essential state=installed
+  - apt: name=python-dev state=installed
+  - apt: name=python-smbus state=installed
+  - apt: name=python-imaging state=installed
 
   - name: clone lcd library
     git: repo=https://github.com/adafruit/Adafruit_Python_LED_Backpack.git dest=/root/lcdlibrary accept_hostkey=yes
@@ -20,15 +20,29 @@
   - name: install lcd library
     shell: python setup.py install chdir=/root/lcdlibrary
 
-  - apt: name=gpsd state=latest
-  - apt: name=gpsd-clients state=latest
+  - apt: name=gpsd state=installed
+  - apt: name=gpsd-clients state=installed
 
   - copy: src=gpsd_defaults dest=/etc/default/gpsd owner=root group=root mode=644
 
-  - service: name=gpsd state=restarted
+  - service: name=gpsd state=restarted enabled=yes
 
-  - apt: name=ntp state=latest
+  - apt: name=ntp state=installed
 
   - copy: src=ntp.conf dest=/etc/ntp.conf owner=root group=root mode=644
 
-  - service: name=ntp state=restarted
+  - service: name=ntp state=restarted enabled=yes
+
+  - apt: name=python-pip state=installed
+
+  - pip: name=numpy
+
+  - pip: name=tzwhere
+
+  - copy: src=clock.py dest=/usr/local/bin/clock.py owner=root group=root mode=777
+
+  - apt: name=supervisor state=installed
+
+  - copy: src=clock-display.conf dest=/etc/supervisor/conf.d/clock-display.conf owner=root group=root mode=777
+
+  - service: name=supervisor state=restarted enabled=yes
